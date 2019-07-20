@@ -13,7 +13,8 @@
     "vue-apollo": "^3.0.0-rc.1",
     "vue-router": "^3.0.3",
     "vuetify": "^1.5.5",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "lodash": ">=4.17.13"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.8.0",
