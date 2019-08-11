@@ -8,7 +8,7 @@ const createToken = (user, secret, expiresIn) => {
 
 module.exports = {
   Query: {
-    getCurrentUser: async (_, args, { User, currentUser }) => {
+    getCurrentUser: async (_, _args, { User, currentUser }) => {
       if (!currentUser) {
         return null;
       }
@@ -19,8 +19,8 @@ module.exports = {
         model: "Post"
       });
       return user;
-    },    
-    getPosts: async (_, args, { Post }) => {
+    },
+    getPosts: async (_, _args, { Post }) => {
       const posts = await Post.find({})
         .sort({ createdDate: "desc" })
         .populate({
@@ -28,6 +28,32 @@ module.exports = {
           model: "User"
         });
       return posts;
+    },
+    infiniteScrollPosts: async (_, { pageNum, pageSize }, { Post }) => {
+      let posts;
+      if (pageNum === 1) {
+        posts = await Post.find({})
+          .sort({ createdDate: "desc" })
+          .populate({
+            path: "createdBy",
+            model: "User"
+          })
+          .limit(pageSize);
+      } else {
+        // If page number is greater than one, figure out how many documents to skip
+        const skips = pageSize * (pageNum - 1);
+        posts = await Post.find({})
+          .sort({ createdDate: "desc" })
+          .populate({
+            path: "createdBy",
+            model: "User"
+          })
+          .skip(skips)
+          .limit(pageSize);
+      }
+      const totalDocs = await Post.countDocuments();
+      const hasMore = totalDocs > pageSize * pageNum;
+      return { posts, hasMore };
     }
   },
   Mutation: {
