@@ -8,6 +8,7 @@ import {
   GET_CURRENT_USER,
   GET_POSTS,
   GET_USER_POSTS,
+  INFINITE_SCROLL_POSTS,
   SEARCH_POSTS,
   ADD_POST,
   UPDATE_USER_POST,
@@ -143,14 +144,16 @@ export default new Vuex.Store({
           update: (cache, { data: { addPost } }) => {
             // First read the query you want to update
             const data = cache.readQuery({ query: GET_POSTS });
-            // Create updated data
-            data.getPosts.unshift(addPost);
-            // Write updated data back to query
-            console.log(data);
-            cache.writeQuery({
-              query: GET_POSTS,
-              data
-            });
+            if (data.getPosts) {
+              // Create updated data
+              data.getPosts.unshift(addPost);
+              // Write updated data back to query
+              console.log(data);
+              cache.writeQuery({
+                query: GET_POSTS,
+                data
+              });
+            }
           },
           // optimistic response ensures data is added immediately as we specified for the update function
           optimisticResponse: {
@@ -160,7 +163,17 @@ export default new Vuex.Store({
               _id: -1,
               ...payload
             }
-          }
+          },
+          // Rerun specified queries after performing the mutation in order to get fresh data
+          refetchQueries: [
+            {
+              query: INFINITE_SCROLL_POSTS,
+              variables: {
+                pageNum: 1,
+                pageSize: 2
+              }
+            }
+          ]          
         })
         .then(({ data }) => {
           console.log(data.addPost);
