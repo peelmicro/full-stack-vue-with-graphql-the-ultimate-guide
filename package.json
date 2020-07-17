@@ -19,7 +19,7 @@
     "jsonwebtoken": "^8.3.0",
     "md5": "^2.2.1",
     "mongoose": "^5.2.6",
-    "lodash": ">=4.17.13"
+    "lodash": ">=4.17.19"
   },
   "devDependencies": {
     "concurrently": "^3.6.0",
