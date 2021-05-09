@@ -9,7 +9,7 @@
   "dependencies": {
     "apollo-boost": "^0.4.3",
     "core-js": "^2.6.5",
-    "lodash": ">=4.17.13",
+    "lodash": ">=4.17.21",
     "moment": "^2.24.0",
     "vue": "^2.6.10",
     "vue-apollo": "^3.0.0-rc.1",
